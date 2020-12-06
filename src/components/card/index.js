@@ -2,11 +2,15 @@ import React from "react";
 import { GiHand } from "react-icons/gi";
 import "./index.css";
 
-const Card = ({ item, validationHandler }) => {
+const Card = ({ item, validationHandler, disable }) => {
   return (
     <div
       onClick={
-        item.disabled ? null : () => validationHandler(item.id, item.card_id)
+        item.disabled
+          ? null
+          : disable
+          ? null
+          : () => validationHandler(item.id, item.card_id)
       }
       className={item.flipped ? "card selected" : "card"}
     >

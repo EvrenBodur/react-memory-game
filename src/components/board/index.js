@@ -2,10 +2,11 @@ import React, { useCallback, useEffect, useState } from "react";
 import Card from "../card";
 import "./index.css";
 
-const Board = ({ deck }) => {
+const Board = ({ deck, score, scoreHandler }) => {
   const [newDeck, setNewDeck] = useState(deck);
   const [validation, setValidation] = useState([]);
   const [cardID, setCardID] = useState([]);
+  const [disable, setDisable] = useState(false);
 
   const flipper = useCallback(
     (id, willFlip, willDisable) => {
@@ -35,25 +36,40 @@ const Board = ({ deck }) => {
   const isMatch = useCallback(() => {
     if (validation.length === 1) return;
     if (validation.length && validation[0] === validation[1]) {
-      console.log("matched");
       setNewDeck(flipper(validation[0], true, true));
       setValidation([]);
       setCardID([]);
-    } else if (validation.length && validation[0] !== validation[1]) {
-      console.log("not matched");
+      scoreHandler(100);
+    } else if (validation.length > 1 && validation[0] !== validation[1]) {
+      setDisable(true);
       setTimeout(() => {
         cardID.map((ID) => {
           setNewDeck(flipper(ID, false, false));
           setValidation([]);
           setCardID([]);
+          setDisable(false);
+          scoreHandler(-25);
         });
-      }, 500);
+      }, 750);
     }
-  }, [validation, cardID, flipper]);
+  }, [validation, cardID, flipper, scoreHandler]);
 
   useEffect(() => {
     isMatch();
-  }, [validation, isMatch]);
+  }, [isMatch]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      const start = newDeck.map((item) => {
+        return {
+          ...item,
+          flipped: false,
+          disabled: false,
+        };
+      });
+      setNewDeck(start);
+    }, 5000);
+  }, []);
 
   return (
     <div className="board">
@@ -62,6 +78,7 @@ const Board = ({ deck }) => {
           <Card
             key={item.id}
             item={item}
+            disable={disable}
             validation={validation}
             validationHandler={validationHandler}
           />

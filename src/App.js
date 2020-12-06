@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import Board from "./components/board";
 import { deck } from "./deck/deck";
 import "./App.css";
@@ -19,10 +19,22 @@ const createDeck = () => {
 };
 
 const App = () => {
+  const [score, setScore] = useState(0);
   const deck = createDeck();
+
+  const scoreHandler = useCallback(
+    (val) => {
+      setScore(score + val);
+    },
+    [score]
+  );
   return (
     <div className="container">
-      <Board deck={deck} />
+      <Board deck={deck} score={score} scoreHandler={scoreHandler} />
+      <div className="score-board">
+        <div className="title">Score</div>
+        <div className="score">{score}</div>
+      </div>
     </div>
   );
 };
