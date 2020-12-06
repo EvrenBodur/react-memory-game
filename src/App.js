@@ -1,25 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import Board from "./components/board";
+import { deck } from "./deck/deck";
+import "./App.css";
 
-function App() {
+const createDeck = () => {
+  let id = 0;
+  const newDeck = [...deck, ...deck].map((item) => {
+    id++;
+    return {
+      id,
+      card_id: item.card_id,
+      svg: item.svg,
+      flipped: item.flipped,
+      disabled: item.disabled,
+    };
+  });
+  return newDeck;
+};
+
+const App = () => {
+  const deck = createDeck();
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container">
+      <Board deck={deck} />
     </div>
   );
-}
+};
 
 export default App;
